@@ -1,7 +1,13 @@
-require('./config/config');
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
+require('./config/config'); //Setea el Puerto para ambiente de prueba o Producción
+const express = require('express'); //Librería para interactuar con servicios
+const app = express(); //prepara un propiedad para usar el express
+const bodyParser = require('body-parser'); //Librería usada para dar formato JSON
+const mongoose = require('mongoose'); //Librería para interactuar con MongoDB
+
+
+/**
+ * Inicializando el parsing para JSON
+ */
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -9,39 +15,18 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+app.use(require('./routes/usuario'));
 
-app.get('/usuario', function(req, res) {
-    res.json('get usuario');
-})
-
-app.post('/usuario', function(req, res) {
-
-    let body = req.body;
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'El nombre es necesario'
-        })
-    } else {
-        res.json({
-            persona: body
-        });
-    }
-
-
-})
-
-app.put('/usuario/:id', function(req, res) {
-    let id = req.params.id;
-    res.json({
-        id
+//si la conexión está abierta, ésta recibe el JSON y lo envía a su dirección ?????
+mongoose.connect('mongodb://localhost:27017/dbcafe', { useNewUrlParser: true, useCreateIndex: true })
+    .then(res => {
+        console.log(`Conexión exitosa`);
+    }).catch(err => {
+        console.log(err);
     });
-})
 
-app.delete('/usuario', function(req, res) {
-    res.json('delete usuario');
-})
+
 
 app.listen(process.env.PORT, () => {
-    console.log('Escuchando puerto: ', 3000);
+    console.log('Escuchando puerto: ', process.env.PORT);
 });
