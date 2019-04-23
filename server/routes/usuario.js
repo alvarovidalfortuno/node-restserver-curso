@@ -1,12 +1,52 @@
 //Cargar express
 const express = require('express');
+//Cargar encriptador
 const bcrypt = require('bcrypt');
+//Cargar Validador??
+const _ = require('underscore'); // para escoger que campos quiero actualizar
 //Inicializar express
 const app = express();
+//Instanciando el esquema del usuario
 const Usuario = require('../models/usuario');
 
 app.get('/usuario', function(req, res) {
-    res.json('get usuario LOCAL');
+
+    let desde = req.query.desde || 5;
+    let limite = req.query.limite;
+    desde = Number(desde);
+    limite = Number(limite);
+
+    Usuario.find({ "estado": true })
+        .skip(desde)
+        .limit(limite)
+        .exec((err, Usuarios) => {
+
+            if (err) {
+                res.status(400).json({
+                    ok: false,
+                    err
+                })
+            }
+            Usuario.find({ "estado": true }).count()
+                .exec((err, nRegistros) => {
+                    if (err) {
+                        res.status(400).json({
+                            ok: false,
+                            err
+                        })
+                    }
+                    res.json({
+                        ok: true,
+                        Usuarios: Usuarios,
+                        n_usuarios: nRegistros
+                    })
+                })
+
+
+        })
+
+
+
 })
 
 app.post('/usuario', function(req, res) {
@@ -25,14 +65,14 @@ app.post('/usuario', function(req, res) {
     //Schema posee un método para grabar los datos en el.
     usuario.save((err, usuarioDB) => {
         if (err) {
-            return res.status(400).json({
+            return res.status(400).json({ //Al imprimir conserva las modificaciones al toJSON del SCHEMA
                 ok: false,
                 err
             });
 
         }
         //usuarioDB.password = null;
-        res.json({
+        res.json({ //Al imprimir conserva las modificaciones al toJSON del SCHEMA
             ok: true,
             usuario: usuarioDB
         });
@@ -44,14 +84,55 @@ app.post('/usuario', function(req, res) {
 
 app.put('/usuario/:id', function(req, res) {
     let id = req.params.id;
-    res.json({
-        id
-    });
+    let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
+
+
+    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        }
+
+        res.json({
+            ok: true,
+            usuarioDB
+        });
+
+    })
 })
 
-app.delete('/usuario', function(req, res) {
-    res.json('delete usuario');
-})
+app.delete('/usuario/:id', function(req, res) {
 
+    let id = req.params.id;
+    let estado = false;
+    Usuario.findByIdAndUpdate(id, { estado }, { new: true }, (err, UsuarioEliminado) => {
+
+        if (err) {
+            res.status(400).json({
+                ok: false,
+                err
+            })
+
+        }
+        if (!UsuarioEliminado) {
+            res.status(400).json({
+                ok: false,
+                error: {
+                    mensaje: "Usuario no encontrado"
+                }
+            })
+        }
+        res.json({
+            ok: true,
+            usuario_eliminado: UsuarioEliminado
+        })
+
+    })
+
+
+
+})
 
 module.exports = app;
