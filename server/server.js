@@ -17,14 +17,14 @@ app.use(bodyParser.json())
 
 app.use(require('./routes/usuario'));
 
+
 //si la conexión está abierta, ésta recibe el JSON y lo envía a su dirección ?????
-mongoose.connect('mongodb://localhost:27017/dbcafe', { useNewUrlParser: true, useCreateIndex: true })
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: true })
     .then(res => {
         console.log(`Conexión exitosa`);
     }).catch(err => {
         console.log(err);
     });
-
 
 
 app.listen(process.env.PORT, () => {

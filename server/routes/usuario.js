@@ -16,7 +16,7 @@ app.get('/usuario', function(req, res) {
     desde = Number(desde);
     limite = Number(limite);
 
-    Usuario.find({ "estado": true })
+    Usuario.find({})
         .skip(desde)
         .limit(limite)
         .exec((err, Usuarios) => {
@@ -27,7 +27,7 @@ app.get('/usuario', function(req, res) {
                     err
                 })
             }
-            Usuario.find({ "estado": true }).count()
+            Usuario.find({}).count()
                 .exec((err, nRegistros) => {
                     if (err) {
                         res.status(400).json({
