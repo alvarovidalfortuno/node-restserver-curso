@@ -15,7 +15,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.use(require('./routes/usuario'));
+app.use(require('./routes/index'));
+
+
+
+/*
+
+*/
+//app.use(express.urlencoded({extended: false}))
 
 
 //si la conexión está abierta, ésta recibe el JSON y lo envía a su dirección ?????
