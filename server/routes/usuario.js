@@ -79,9 +79,6 @@ app.post('/usuario', [verificaToken, verificaAdmin_Role], function(req, res) {
                 usuario: usuarioDB
             });
         });
-
-
-
     })
     //ACTUALIZAR
 app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], function(req, res) {
