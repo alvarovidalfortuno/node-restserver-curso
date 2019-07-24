@@ -3,6 +3,7 @@ const express = require('express'); //Librería para interactuar con servicios
 const app = express(); //prepara un propiedad para usar el express
 const bodyParser = require('body-parser'); //Librería usada para dar formato JSON
 const mongoose = require('mongoose'); //Librería para interactuar con MongoDB
+const path = require('path'); //Para usar ubicaciones locales y renderizar páginas
 
 
 /**
@@ -17,7 +18,7 @@ app.use(bodyParser.json())
 
 app.use(require('./routes/index'));
 
-
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 /*
 
