@@ -13,7 +13,7 @@ const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticac
 
 
 
-app.get('/usuario', verificaToken, (req, res) => {
+app.get('/usuario', (req, res) => {
 
         let desde = req.query.desde || 5;
         let limite = req.query.limite;
