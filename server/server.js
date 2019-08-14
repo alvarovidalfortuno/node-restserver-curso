@@ -10,12 +10,7 @@ const path = require('path'); //Para usar ubicaciones locales y renderizar pági
  * Inicializando el parsing para JSON
  */
 
-app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', "*");
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-})
+
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -27,10 +22,16 @@ app.use(require('./routes/index'));
 
 app.use(express.static(path.resolve(__dirname, '../public')));
 
-/*
+app.use(function(req, res, next) {
+        res.header('Access-Control-Allow-Origin', "*");
+        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+        res.header('Access-Control-Allow-Headers', 'Content-Type');
+        next();
+    })
+    /*
 
-*/
-//app.use(express.urlencoded({extended: false}))
+    */
+    //app.use(express.urlencoded({extended: false}))
 
 
 //si la conexión está abierta, ésta recibe el JSON y lo envía a su dirección ?????
